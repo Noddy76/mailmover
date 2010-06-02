@@ -1,0 +1,15 @@
+mailmover.imap.host      = imap.cbs.ad.cbs.net
+mailmover.imap.username  = <imap username>
+mailmover.imap.password  = <password>
+mailmover.imap.folder    = INBOX
+mailmover.imap.frequency = 60000
+
+mailmover.output.protocol = smtp
+mailmover.output.mailhost = smtprelay.cbs.com
+mailmover.output.port     = 25
+mailmover.output.username = 
+mailmover.output.password = 
+mailmover.output.tag      = Queeg
+mailmover.output.address  = <email address>
+mailmover.output.auth     = false
+mailmover.output.debug    = false

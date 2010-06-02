@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+java -cp lib/\* org.queeg.mailmover.IMAPMailMover ./mailmover.properties
