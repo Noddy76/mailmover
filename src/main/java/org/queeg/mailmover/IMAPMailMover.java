@@ -5,13 +5,10 @@ import java.util.Properties;
 
 import javax.mail.Folder;
 import javax.mail.FolderClosedException;
-import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Store;
 
 import org.apache.log4j.Logger;
-
-import com.sun.mail.imap.IMAPFolder;
 
 public class IMAPMailMover implements Runnable {
   private final Logger log = Logger.getLogger(getClass());
@@ -55,30 +52,12 @@ public class IMAPMailMover implements Runnable {
           folder.addMessageCountListener(getMessageListener());
 
           // Check mail once in "freq" MILLIseconds
-          boolean supportsIdle = false;
-          try {
-            if (folder instanceof IMAPFolder) {
-              IMAPFolder f = (IMAPFolder) folder;
-              f.idle();
-              supportsIdle = true;
-            }
-          } catch (FolderClosedException fex) {
-            throw fex;
-          } catch (MessagingException mex) {
-            supportsIdle = false;
-          }
           for (;;) {
-            if (supportsIdle && folder instanceof IMAPFolder) {
-              IMAPFolder f = (IMAPFolder) folder;
-              f.idle();
-              // log.debug("IDLE done");
-            } else {
-              Thread.sleep(freq); // sleep for freq milliseconds
+            Thread.sleep(freq); // sleep for freq milliseconds
 
-              // This is to force the IMAP server to send us
-              // EXISTS notifications.
-              folder.getMessageCount();
-            }
+            // This is to force the IMAP server to send us
+            // EXISTS notifications.
+            folder.getMessageCount();
           }
         } catch (FolderClosedException e) {
           // Ignore to work around idle timeouts on Exchange
