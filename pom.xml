@@ -11,6 +11,16 @@
     <developerConnection>scm:git:git@github.com:Noddy76/mailmover.git</developerConnection>
   </scm>
 
+  <distributionManagement>
+    <repository>
+      <uniqueVersion>false</uniqueVersion>
+      <id>queeg.org</id>
+      <name>Queeg.org</name>
+      <url>scp://holly.queeg.org/home/noddy/www/queeg.org/maven2</url>
+      <layout>default</layout>
+    </repository>
+  </distributionManagement>
+
   <build>
     <plugins>
       <plugin>
