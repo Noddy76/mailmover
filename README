@@ -1,0 +1,7 @@
+A tool to forward mails on an IMAP server to a SMTP address. Run as a service
+this can, for example, pick up mails from a corporate IMAP server and post them
+to a GMail account.
+
+0.4.0
+ - Check for unread mail and forward them before starting to listen to new mail
+ - Improve logging
