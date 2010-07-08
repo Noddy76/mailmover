@@ -84,7 +84,7 @@ public class MessageForwarder extends MessageCountAdapter {
 
           MimeMessage msg = new MimeMessage((MimeMessage) imapMessage);
           msg.addHeader("X-MailMover-Tag", tag);
-          log.info(msg.getSubject());
+          log.info("Forwarding : " + msg.getSubject());
 
           Address a = new InternetAddress(getAddress());
 
