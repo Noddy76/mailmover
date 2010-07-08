@@ -3,10 +3,13 @@ package org.queeg.mailmover;
 import java.io.FileInputStream;
 import java.util.Properties;
 
+import javax.mail.Flags;
 import javax.mail.Folder;
 import javax.mail.FolderClosedException;
+import javax.mail.Message;
 import javax.mail.Session;
 import javax.mail.Store;
+import javax.mail.search.FlagTerm;
 
 import org.apache.log4j.Logger;
 
@@ -43,7 +46,14 @@ public class IMAPMailMover implements Runnable {
         log.fatal("Invalid folder");
         System.exit(1);
       }
-
+      
+      log.info("Checking for existing unread mail on IMAP server");
+      folder.open(Folder.READ_WRITE);
+      Message[] unread = folder.search(new FlagTerm(new Flags(Flags.Flag.SEEN), false));
+      getMessageListener().forwardMessages(unread);
+      folder.close(false);
+      log.info("Done with existing unread mail. Waitingf for new mail.");
+      
       for (;;) {
         try {
           folder.open(Folder.READ_WRITE);

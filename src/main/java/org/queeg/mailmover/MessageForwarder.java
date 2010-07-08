@@ -42,6 +42,11 @@ public class MessageForwarder extends MessageCountAdapter {
 
   @Override
   public void messagesAdded(MessageCountEvent ev) {
+    Message[] messages = ev.getMessages();
+    forwardMessages(messages);
+  }
+  
+  public void forwardMessages(Message[] messages) {
     Properties props = new Properties(System.getProperties());
     if (auth) {
       props.put("mail." + protocol + ".auth", "true");
@@ -57,7 +62,6 @@ public class MessageForwarder extends MessageCountAdapter {
     Session session = Session.getInstance(props, null);
     session.setDebug(debug);
 
-    Message[] messages = ev.getMessages();
     for (Message imapMessage : messages) {
       try {
         String[] messageIds = imapMessage.getHeader("Message-ID");
