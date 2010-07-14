@@ -52,7 +52,7 @@ public class IMAPMailMover implements Runnable {
       Message[] unread = folder.search(new FlagTerm(new Flags(Flags.Flag.SEEN), false));
       getMessageListener().forwardMessages(unread);
       folder.close(false);
-      log.info("Done with existing unread mail. Waitingf for new mail.");
+      log.info("Done with existing unread mail. Waiting for new mail.");
       
       for (;;) {
         try {
