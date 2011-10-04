@@ -35,6 +35,7 @@ public class MessageForwarder extends MessageCountAdapter {
   private String address;
   private boolean auth = false;
   private boolean debug = false;
+  private boolean ssl = false;
 
   public MessageForwarder() {
     seenIds = new ArrayDeque<String>();
@@ -57,7 +58,16 @@ public class MessageForwarder extends MessageCountAdapter {
     }
 
     props.put("mail." + protocol + ".host", mailhost);
-
+    
+    if (ssl) {
+      if (port > 0) {
+        props.put("mail." + protocol + ".socketFactory.port", port);
+      } else {
+        props.put("mail." + protocol + ".socketFactory.port", "465");
+      }
+      props.put("mail." + protocol + ".socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+    }
+    
     // Get a Session object
     Session session = Session.getInstance(props, null);
     session.setDebug(debug);
@@ -180,4 +190,12 @@ public class MessageForwarder extends MessageCountAdapter {
   public void setDebug(boolean debug) {
     this.debug = debug;
   }
+
+public boolean isSsl() {
+	return ssl;
+}
+
+public void setSsl(boolean ssl) {
+	this.ssl = ssl;
+}
 }
