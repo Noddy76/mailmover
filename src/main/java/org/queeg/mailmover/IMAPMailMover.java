@@ -21,22 +21,25 @@ public class IMAPMailMover implements Runnable {
   private String password;
   private String folderName;
   private int freq = 60000;
+  private boolean ssl = false;
 
   private MessageForwarder messageListener;
 
   public void run() {
     try {
       Properties props = System.getProperties();
-
+      
       // Get a Session object
       Session session = Session.getInstance(props, null);
       // session.setDebug(true);
-
       // Get a Store object
-      Store store = session.getStore("imap");
-
+      String protocol = "imap";
+      if (ssl) {
+        protocol = "imaps";
+      }
+      Store store = session.getStore(protocol);  
+      
       log.info("Mail Mover starting");
-
       // Connect
       store.connect(imapHost, username, password);
 
@@ -119,6 +122,14 @@ public class IMAPMailMover implements Runnable {
     this.freq = freq;
   }
 
+  public boolean isSsl() {
+    return ssl;
+  }
+
+  public void setSsl(boolean ssl) {
+    this.ssl = ssl;
+  }
+
   public void setMessageListener(MessageForwarder messageListener) {
     this.messageListener = messageListener;
   }
@@ -126,7 +137,7 @@ public class IMAPMailMover implements Runnable {
   public MessageForwarder getMessageListener() {
     return messageListener;
   }
-
+  
   public static void main(String[] args) throws Exception {
     if (args.length != 1) {
       System.err.println("Usage: IMAPMailMover <properties file>");
@@ -143,6 +154,7 @@ public class IMAPMailMover implements Runnable {
     String imapPassword = props.getProperty("mailmover.imap.password");
     String imapFolder = props.getProperty("mailmover.imap.folder", "INBOX");
     int imapFrequency = Integer.parseInt(props.getProperty("mailmover.imap.frequency", "60000"));
+    boolean imapSsl = Boolean.parseBoolean(props.getProperty("mailmover.imap.ssl", "false"));
 
     String outputProtocol = props.getProperty("mailmover.output.protocol");
     String outputMailHost = props.getProperty("mailmover.output.mailhost");
@@ -153,6 +165,7 @@ public class IMAPMailMover implements Runnable {
     String outputAddress = props.getProperty("mailmover.output.address");
     boolean outputAuth = Boolean.parseBoolean(props.getProperty("mailmover.output.auth", "false"));
     boolean outputDebug = Boolean.parseBoolean(props.getProperty("mailmover.output.debug", "false"));
+    boolean outputSsl = Boolean.parseBoolean(props.getProperty("mailmover.output.ssl", "false"));
 
     MessageForwarder listener = new MessageForwarder();
     listener.setProtocol(outputProtocol);
@@ -164,6 +177,7 @@ public class IMAPMailMover implements Runnable {
     listener.setAddress(outputAddress);
     listener.setAuth(outputAuth);
     listener.setDebug(outputDebug);
+    listener.setSsl(outputSsl);
 
     IMAPMailMover t = new IMAPMailMover();
     t.setMessageListener(listener);
@@ -172,6 +186,7 @@ public class IMAPMailMover implements Runnable {
     t.setPassword(imapPassword);
     t.setFolderName(imapFolder);
     t.setFreq(imapFrequency);
+    t.setSsl(imapSsl);
 
     t.run();
   }
